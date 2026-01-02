@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+
+# Data & models
+data/
+*.pt
+*.bin
+
+# HuggingFace cache
+.cache/
+.huggingface/
+
+# Environment
+.env
