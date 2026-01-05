@@ -13,3 +13,6 @@ data/
 
 # Environment
 .env
+
+# files
+test_*.py
