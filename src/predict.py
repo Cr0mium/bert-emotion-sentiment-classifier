@@ -2,72 +2,74 @@ import torch
 from transformers import BertTokenizer
 from model import get_model
 
+# config
 MODEL_NAME = "bert-base-uncased"
+NUM_LABELS = 6
+MAX_LENGTH = 128
 CHECKPOINT_PATH = "./bert_emotion_epoch_5.pt"
-LABELS = [
-    "sadness",
-    "joy",
-    "love",
-    "anger",
-    "fear",
-    "surprise"
-]
-MAX_LEN = 128
 
-device= torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-tokenizer= BertTokenizer.from_pretrained(MODEL_NAME)
+LABELS = ["sadness", "joy", "love", "anger", "fear", "surprise"]
 
-checkpoint = torch.load(CHECKPOINT_PATH, map_location=device)
-model = get_model(num_labels=len(LABELS),model_name=MODEL_NAME)
-model.load_state_dict(checkpoint['model_state_dict'])
-model.to(device)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-model.eval()
 
-def predict(text: str):
-    """
-    Predict emotion label for input text
-    """
-    inputs = tokenizer(
+def load_model():
+    tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
+    model = get_model(num_labels=NUM_LABELS, model_name=MODEL_NAME)
+
+    checkpoint = torch.load(CHECKPOINT_PATH, map_location=device)
+    model.load_state_dict(checkpoint["model_state_dict"])
+
+    model.to(device)
+    model.eval()
+
+    return model, tokenizer
+
+
+def predict(text, model, tokenizer):
+    encoding = tokenizer(
         text,
-        return_tensors="pt",
         truncation=True,
-        padding=True,
-        max_length=MAX_LEN
+        padding="max_length",
+        max_length=MAX_LENGTH,
+        return_tensors="pt"
     )
 
-    inputs = {
-        'input_ids':inputs['input_ids'],
-        'attention_mask':inputs['attention_mask']
-    }
+    input_ids = encoding["input_ids"].to(device)
+    attention_mask = encoding["attention_mask"].to(device)
 
     with torch.no_grad():
-        outputs = model(**inputs)
+        outputs = model(
+            input_ids=input_ids,
+            attention_mask=attention_mask
+        )
+
         logits = outputs.logits
-        prediction = torch.argmax(logits, dim=1).item()
+        probs = torch.softmax(logits, dim=1)
 
-    return LABELS[prediction]
+        pred_id = torch.argmax(probs, dim=1).item()
+        confidence = probs[0][pred_id].item()
 
-
-if __name__ == "__main__":
-    sample_texts = [
-        "I am feeling very happy today!",
-        "This is the worst day of my life",
-        "I'm scared about the results",
-        "I love spending time with my family"
-    ]
+    return LABELS[pred_id], confidence
 
 
 if __name__ == "__main__":
-    sample_texts = [
-        "I am feeling very happy today!",
-        "This is the worst day of my life",
-        "I'm scared about the results",
-        "I love spending time with my family"
-    ]
+    model, tokenizer = load_model()
 
-    for text in sample_texts:
-        print(f"Text: {text}")
-        print(f"Prediction: {predict(text)}\n")
+    print("\n🧠 BERT Emotion Classifier")
+    print("Type a sentence and press Enter")
+    print("Type 'exit' or 'quit' to stop\n")
 
+    while True:
+        text = input(">> ")
 
+        if text.lower() in ["exit", "quit"]:
+            print("👋 Exiting...")
+            break
+
+        if len(text.strip()) == 0:
+            print("⚠️ Please enter some text.")
+            continue
+
+        label, confidence = predict(text, model, tokenizer)
+        print(f"Prediction: {label} | Confidence: {confidence:.2f}\n")
