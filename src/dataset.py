@@ -38,7 +38,7 @@ def get_dataLoaders(data,batch_size=16):
     test_ds= emotionDataset(data,'test',tokenizer,128)
 
     train_dl= DataLoader(train_ds,batch_size=batch_size,shuffle=True)
-    validation_dl= DataLoader(train_ds,batch_size=batch_size)
-    test_dl= DataLoader(train_ds,batch_size=batch_size)
+    validation_dl= DataLoader(validation_ds,batch_size=batch_size)
+    test_dl= DataLoader(test_ds,batch_size=batch_size)
 
     return train_dl,validation_dl, test_dl
