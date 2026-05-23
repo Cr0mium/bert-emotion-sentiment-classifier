@@ -1,89 +1,125 @@
-# BERT-based Emotion & Sentiment Classification (NLP)
+# 🧠 BERT-based Emotion & Sentiment Classification (NLP)
 
-An end-to-end **Machine Learning / AI engineering–focused NLP project** that fine-tunes **BERT** for multi-class emotion classification, with a clean training–evaluation–inference pipeline built using **PyTorch** and **Hugging Face Transformers**.
+An end-to-end **Machine Learning / AI Engineering focused NLP project** that fine-tunes **BERT** for multi-class emotion classification using **PyTorch** and **Hugging Face Transformers**.
 
-This repository is designed to reflect **real-world ML engineering practices**: modular code structure, reproducible training, checkpointing, evaluation, and interactive inference.
+This project is designed to reflect **real-world ML engineering practices** including:
 
----
-
-## 🔍 Problem Statement
-
-Given a short text input, predict the **underlying emotion** expressed by the sentence.
-
-- Multi-class classification (6 emotion labels)
-- Transformer-based deep learning approach
-- Focus on model training, optimization, and inference (not just experimentation)
+- modular project structure
+- reproducible training
+- checkpointing
+- evaluation pipelines
+- inference workflows
+- GPU-aware optimization
 
 ---
 
-## 🧠 ML / AI Engineering Focus
+# 🔍 Problem Statement
 
-This project emphasizes **how models are trained and used in practice**, not just accuracy:
+Given a short text input, predict the **underlying emotion** expressed in the sentence.
 
-- Fine-tuning a **pretrained Transformer (BERT)**
-- Custom **training loop** with:
-  - Learning rate warmup
-  - Linear scheduler
-  - Gradient clipping
-- Proper **train / validation / test separation**
-- **Checkpoint saving & loading** for reproducibility
-- Standalone **evaluation and prediction scripts**
-- GPU-aware execution (CPU / CUDA)
+This is a:
+
+- **multi-class NLP classification task**
+- built using a **Transformer-based deep learning pipeline**
+- focused on practical ML engineering workflows rather than notebook-only experimentation
 
 ---
 
-## 🧰 Tech Stack
+# 🧠 ML / AI Engineering Highlights
+
+This project focuses on how modern NLP systems are trained and evaluated in production-style workflows.
+
+### ✅ Features Implemented
+
+- Fine-tuning **BERT (`bert-base-uncased`)**
+- Custom PyTorch training loop
+- Validation-based evaluation pipeline
+- Early stopping
+- Mixed precision training (AMP)
+- Gradient clipping
+- Learning rate warmup + scheduler
+- Checkpoint saving/loading
+- Standalone evaluation script
+- Interactive inference pipeline
+- CPU/GPU device-aware execution
+
+---
+
+# 🧰 Tech Stack
 
 - **Python**
 - **PyTorch**
-- **Hugging Face Transformers & Datasets**
-- **BERT (bert-base-uncased)**
-- **tqdm** (progress tracking)
-- **Google Colab** (GPU training)
+- **Hugging Face Transformers**
+- **Hugging Face Datasets**
+- **BERT**
+- **scikit-learn**
+- **tqdm**
+- **Google Colab (GPU training)**
 - **Git & GitHub**
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
-```
+```text
 bert-emotion-sentiment-classifier/
 │
 ├── src/
-│   ├── dataset.py      # Tokenization & DataLoader preparation
-│   ├── model.py        # BERT model initialization
-│   ├── train.py        # Training loop + checkpointing
-│   ├── evaluate.py     # Test set evaluation
-│   └── predict.py      # Interactive inference
+│   ├── dataset.py
+│   ├── model.py
+│   ├── train.py
+│   ├── evaluate.py
+│   └── predict.py
 │
-├── checkpoints/        # Saved model checkpoints (optional)
+├── checkpoints/
 ├── README.md
 └── requirements.txt
 ```
 
+### File Overview
+
+| File          | Purpose                                       |
+| ------------- | --------------------------------------------- |
+| `dataset.py`  | Tokenization and DataLoader preparation       |
+| `model.py`    | BERT model initialization                     |
+| `train.py`    | Training loop, scheduler, AMP, early stopping |
+| `evaluate.py` | Test evaluation and metrics                   |
+| `predict.py`  | Interactive inference script                  |
+
 ---
 
-## 📊 Dataset
+# 📊 Dataset
 
-- **Hugging Face ****emotion**** dataset**
-- 6 emotion classes
-- Automatically split into:
-  - Train
-  - Validation
-  - Test
+This project uses the **Hugging Face `emotion` dataset**.
+
+### Emotion Classes
+
+- sadness
+- joy
+- love
+- anger
+- fear
+- surprise
+
+Dataset splits:
+
+- Train
+- Validation
+- Test
 
 ---
 
-## 🚀 Training
+# ⚙️ Training Pipeline
 
-The model is trained using **BERT for sequence classification** with:
+The model is trained using:
 
-- AdamW optimizer
-- Learning rate warmup (10%)
-- Linear decay scheduler
-- Gradient clipping to stabilize training
+- **AdamW optimizer**
+- **Linear learning rate scheduler**
+- **10% warmup steps**
+- **Gradient clipping**
+- **Mixed precision training (AMP)**
 
-Run training:
+### Run Training
 
 ```bash
 python src/train.py
@@ -91,32 +127,54 @@ python src/train.py
 
 During training:
 
-- Training & validation loss are tracked
-- Validation accuracy is computed each epoch
-- Model checkpoints are saved per epoch
+- training loss is tracked
+- validation loss is tracked
+- validation accuracy & macro F1 are computed
+- best checkpoints are automatically saved
+- early stopping prevents overfitting
 
 ---
 
-## 📈 Evaluation
+# 📈 Model Performance
 
-Evaluate the trained model on the test set:
+### Best Validation Metrics
+
+| Metric              | Score      |
+| ------------------- | ---------- |
+| Validation Accuracy | **93.55%** |
+| Macro F1 Score      | **0.9112** |
+
+The model achieved strong balanced performance across all emotion classes.
+
+---
+
+# 🧪 Evaluation
+
+Evaluate the model on the held-out test set:
 
 ```bash
 python src/evaluate.py
 ```
 
-**Sample Result:**
+Metrics computed:
 
-```
-Test Loss: 0.0379
-Test Accuracy: 0.9861
+- Loss
+- Accuracy
+- Macro F1 Score
+- Classification Report
+
+Example output:
+
+```text
+Test Accuracy: 0.93+
+Macro F1 Score: 0.91+
 ```
 
 ---
 
-## 🔮 Inference / Prediction
+# 🔮 Inference / Prediction
 
-Interactive, loop-based prediction using the fine-tuned model:
+Interactive inference with the fine-tuned model:
 
 ```bash
 python src/predict.py
@@ -124,57 +182,94 @@ python src/predict.py
 
 Example:
 
-```
+```text
 Enter text (or type 'exit'): I feel really excited about this project!
 Predicted Emotion: joy
 ```
 
-The inference pipeline:
+Inference pipeline includes:
 
-- Loads tokenizer & trained checkpoint
-- Runs model in `eval()` mode
-- Disables gradients for efficiency
-- Converts logits → predicted label
+- tokenizer loading
+- checkpoint loading
+- evaluation mode (`model.eval()`)
+- disabled gradients (`torch.no_grad()`)
+- logits → predicted class conversion
 
 ---
 
-## 🧪 Key ML Concepts Demonstrated
+# 🧠 Key ML Concepts Demonstrated
 
 - Transformer fine-tuning
+- Transfer learning
+- Multi-class classification
 - Logits vs probabilities
 - Gradient clipping
 - Learning rate scheduling
-- Model checkpointing
-- Torch `no_grad()` for inference
-- Device-aware ML code (CPU/GPU)
+- Mixed precision training
+- Early stopping
+- Checkpointing
+- GPU-aware training
+- Evaluation metrics (Accuracy + Macro F1)
 
 ---
 
-## 👨‍💻 Author
+# 🚀 Engineering Improvements Added
 
-**Chinmoy Deka**\
-ML / AI Engineering Enthusiast
+Compared to a basic tutorial pipeline, this project includes:
 
-> This project reflects my focus on **machine learning engineering**, particularly in NLP and deep learning systems. It is part of my portfolio for ML / AI engineering roles.
-
----
-
-## 📌 Notes
-
-- This project prioritizes **engineering clarity and correctness** over dataset scale.
-- The same pipeline can be extended to:
-  - Larger datasets
-  - More emotion classes
-  - Deployment (API / batch inference)
+✅ Proper validation pipeline  
+✅ Macro F1 evaluation  
+✅ Early stopping  
+✅ Mixed precision GPU training  
+✅ Best-model checkpointing  
+✅ Modular project structure  
+✅ Reusable evaluation & inference scripts
 
 ---
 
-## ⭐ Future Improvements
+# 👨‍💻 Author
 
-- Add experiment tracking (e.g., TensorBoard)
-- Hyperparameter configuration via YAML
-- Model export for deployment
-- Support for larger emotion taxonomies
+## Chinmoy Deka
+
+Machine Learning / AI Engineering Enthusiast focused on:
+
+- NLP
+- Deep Learning
+- LLM Systems
+- Retrieval-Augmented Generation (RAG)
+- Applied AI Engineering
+
+This project is part of my ML/AI engineering portfolio.
 
 ---
 
+# 📌 Future Improvements
+
+- TensorBoard / experiment tracking
+- YAML-based config management
+- Hyperparameter sweeps
+- FastAPI deployment
+- ONNX / TorchScript export
+- Dockerized inference pipeline
+- Larger transformer architectures
+- Emotion intensity estimation
+
+---
+
+# ⭐ Final Notes
+
+This project emphasizes:
+
+- engineering clarity
+- reproducible ML workflows
+- practical transformer training
+- clean NLP system design
+
+rather than only achieving benchmark accuracy.
+
+The same architecture can easily scale to:
+
+- larger datasets
+- more emotion classes
+- production inference APIs
+- deployment pipelines
